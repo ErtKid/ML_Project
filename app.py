@@ -1,72 +1,58 @@
-import streamlit as st 
-from lida import Manager, TextGenerationConfig , llm  
-from dotenv import load_dotenv
-import os
-import openai
+import streamlit as st
+from transformers import pipeline
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 from PIL import Image
-from io import BytesIO
+import io
 import base64
 
-load_dotenv()
-openai.api_key = os.getenv('OPENAI_API_KEY')
+# Initialiser le pipeline de génération de texte avec microsoft/phi-2
+phi_pipeline = pipeline("text-generation", model="microsoft/phi-2", trust_remote_code=True)
 
-def base64_to_image(base64_string):
-    # Decode the base64 string
-    byte_data = base64.b64decode(base64_string)
+def base64_to_image(base64_str):
+    return Image.open(io.BytesIO(base64.b64decode(base64_str)))
+
+def generate_summary(data):
+    # Exemple de contexte et de données pour le prompt
+    context = "This is a dataset that contains severals collums. "
+    sample_data = data.sample(n=3).to_csv(index=False)  # Prenez un échantillon de données
+    prompt_intro = "Given the sample data and the columns described, provide a comprehensive summary highlighting key insights, trends, and any interesting findings."
     
-    # Use BytesIO to convert the byte data to image
-    return Image.open(BytesIO(byte_data))
+    # Construction du prompt
+    input_text = f"{context}Here are the column names: {', '.join(data.columns)}. Sample data:\n{sample_data}\n{prompt_intro}"
+    
+    # Génération du résumé avec le modèle
+    result = phi_pipeline(input_text, max_length=400)[0]['generated_text']
+    return result
 
 
-lida = Manager(text_gen = llm("openai"))
-textgen_config = TextGenerationConfig(n=1, temperature=0.5, model="gpt-3.5-turbo-0301", use_cache=True)
+def generate_graph(df):
+    plt.figure(figsize=(10, 6))
+    sns.countplot(data=df, x=df.columns[0])
+    plt.title("Distribution")
+    buffer = io.BytesIO()
+    plt.savefig(buffer, format='png')
+    buffer.seek(0)
+    img = base64.b64encode(buffer.read()).decode('utf-8')
+    buffer.close()
+    return img
 
-menu = st.sidebar.selectbox("Choose an Option", ["Summarize", "Question based Graph"])
+# Interface Streamlit
+st.title("Data Summary and Visualization Application with Phi-2")
 
-if menu == "Summarize":
-    st.subheader("Summarization of your Data")
-    file_uploader = st.file_uploader("Upload your CSV", type="csv")
-    if file_uploader is not None:
-        path_to_save = "filename.csv"
-        with open(path_to_save, "wb") as f:
-            f.write(file_uploader.getvalue())
-        summary = lida.summarize("filename.csv", summary_method="default", textgen_config=textgen_config)
-        st.write(summary)
-        goals = lida.goals(summary, n=2, textgen_config=textgen_config)
-        for goal in goals:
-            st.write(goal)
-        i = 0
-        library = "seaborn"
-        textgen_config = TextGenerationConfig(n=1, temperature=0.2, use_cache=True)
-        charts = lida.visualize(summary=summary, goal=goals[i], textgen_config=textgen_config, library=library)  
-        img_base64_string = charts[0].raster
-        img = base64_to_image(img_base64_string)
-        st.image(img)
-        
+menu = st.sidebar.selectbox("Choose an Option", ["Summary", "Question based Graph"])
 
-
-        
+if menu == "Summary":
+    uploaded_file = st.file_uploader("Upload your CSV file", type="csv")
+    if uploaded_file is not None:
+        df = pd.read_csv(uploaded_file)
+        summary = generate_summary(df)
+        st.write("Generated Summary:", summary)
 elif menu == "Question based Graph":
-    st.subheader("Query your Data to Generate Graph")
-    file_uploader = st.file_uploader("Upload your CSV", type="csv")
-    if file_uploader is not None:
-        path_to_save = "filename1.csv"
-        with open(path_to_save, "wb") as f:
-            f.write(file_uploader.getvalue())
-        text_area = st.text_area("Query your Data to Generate Graph", height=200)
+    uploaded_file = st.file_uploader("Upload your CSV file", type="csv")
+    if uploaded_file is not None:
+        df = pd.read_csv(uploaded_file)
         if st.button("Generate Graph"):
-            if len(text_area) > 0:
-                st.info("Your Query: " + text_area)
-                lida = Manager(text_gen = llm("openai")) 
-                textgen_config = TextGenerationConfig(n=1, temperature=0.2, use_cache=True)
-                summary = lida.summarize("filename1.csv", summary_method="default", textgen_config=textgen_config)
-                user_query = text_area
-                charts = lida.visualize(summary=summary, goal=user_query, textgen_config=textgen_config)  
-                charts[0]
-                image_base64 = charts[0].raster
-                img = base64_to_image(image_base64)
-                st.image(img)
-            
-
-
-
+            img = generate_graph(df)
+            st.image(base64_to_image(img), caption="Generated Graph")
