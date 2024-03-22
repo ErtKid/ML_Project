@@ -21,5 +21,3 @@ jobs:
 
       - name: Run Tests
         run: |
-          # Ajoutez ici vos commandes de test
-          # Par exemple: pytest, ou tout autre commande pour tester votre application
