@@ -12,4 +12,4 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Exécuter l'application
-CMD ["streamlit", "run", "app_phi-2.py", "--server.port=8501"]
+CMD ["streamlit", "run", "app_phi2.py", "--server.port=8501"]
