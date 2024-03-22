@@ -1,5 +1,7 @@
 # ML_Project
 
+[![Test Application](https://github.com/ErtKid/ML_Project/actions/workflows/test_application.yml/badge.svg)](https://github.com/ErtKid/ML_Project/actions/workflows/test_application.yml)
+
 # Application de Résumé et de Visualisation de Données
 
 Cette application, construite avec Streamlit et l'API de Hugging Face Transformers, permet de générer des résumés textuels à partir de données tabulaires et de visualiser ces données sous forme de graphiques. De plus, elle offre la possibilité d'écouter le résumé généré grâce à une fonctionnalité de synthèse vocale.
