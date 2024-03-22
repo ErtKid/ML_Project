@@ -17,7 +17,8 @@ jobs:
       - name: Install Dependencies
         run: |
           pip install -r requirements.txt
-          # Installer les dépendances de votre projet
+
+          pip install torch torchvision torchaudio
 
       - name: Run Tests
         run: |
