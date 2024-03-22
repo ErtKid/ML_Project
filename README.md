@@ -43,3 +43,10 @@ Une fois l'application lancée, vous pouvez :
 - Sélectionner une action à effectuer avec les données chargées :
   - Résumé : Génère un résumé basé sur les données.
   - Graphique basé sur une Question : Crée un graphique représentant la distribution d'une colonne spécifique.
+
+## Captures du projet
+
+![Page accueil](exemple1.png)
+![Page accueil2](exemple2.png)
+
+[Écouter l'audio sur GitHub Pages](URL_vers_la_page_GitHub_Pages_avec_lecteur_audio)
