@@ -6,7 +6,7 @@
 
 Cette application, construite avec Streamlit et l'API de Hugging Face Transformers, permet de générer des résumés textuels à partir de données tabulaires et de visualiser ces données sous forme de graphiques. De plus, elle offre la possibilité d'écouter le résumé généré grâce à une fonctionnalité de synthèse vocale.
 
-## Problématique
+- ### **Problématique**
 
 Ce projet tente d'apporter une solution face à la problématique de l'analyse manuelle et du temps conséquent requis pour synthétiser et visualiser les insights clés à partir de grandes quantités de données tabulaires, en automatisant la génération de résumés textuels et de visualisations graphiques pour une compréhension rapide et interactive des tendances au sein d'une interface web intuitive.
 
