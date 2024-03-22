@@ -47,6 +47,6 @@ Une fois l'application lancée, vous pouvez :
 ## Captures du projet
 
 ![Page accueil](exemple1.png)
-![Page accueil2](exemple2.png)
+![Page accueil2](Exemple2.png)
 
 [Écouter l'audio sur GitHub Pages](URL_vers_la_page_GitHub_Pages_avec_lecteur_audio)
