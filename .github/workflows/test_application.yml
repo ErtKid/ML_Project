@@ -1,0 +1,25 @@
+name: Test Application
+
+on: [push, pull_request]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.9"
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+          # Installer les dépendances de votre projet
+
+      - name: Run Tests
+        run: |
+          # Ajoutez ici vos commandes de test
+          # Par exemple: pytest, ou tout autre commande pour tester votre application

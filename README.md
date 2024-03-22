@@ -46,11 +46,17 @@ Une fois l'application lancée, vous pouvez :
 
 ## Captures du projet
 
-![Page accueil](exemple1.png)
-![Page accueil2](Exemple2.png)
+![Page accueil](assets/exemple1.png)
+![Page accueil2](assets/Exemple2.png)
 
 [Écouter l'audio](https://ueve-my.sharepoint.com/:u:/g/personal/20184149_etud_univ-evry_fr/EVuE-1jJ0_hNq04hte5Wx64BEfjJPTa8eB8C9mXoBqiRKg?e=q05k3o)
 
 ## Schéma cas d'utilisation
 
-![uses_case](uses_case.png)
+![uses_case](assets/uses_case.png)
+
+## Architecture
+
+![architecture](assets/archi.png)
+
+Avrillon-Thade Maxime
