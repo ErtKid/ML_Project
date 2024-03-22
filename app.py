@@ -7,25 +7,24 @@ from PIL import Image
 import io
 import base64
 
-# Initialiser le pipeline de génération de texte avec microsoft/phi-2
-phi_pipeline = pipeline("text-generation", model="microsoft/phi-2", trust_remote_code=True)
+# Choix d'un modèle alternatif pour la génération de résumés
+summarization_pipeline = pipeline("summarization", model="facebook/bart-large-cnn")
 
 def base64_to_image(base64_str):
     return Image.open(io.BytesIO(base64.b64decode(base64_str)))
 
-def generate_summary(data):
-    # Exemple de contexte et de données pour le prompt
-    context = "This is a dataset that contains severals collums. "
-    sample_data = data.sample(n=3).to_csv(index=False)  # Prenez un échantillon de données
-    prompt_intro = "Given the sample data and the columns described, provide a comprehensive summary highlighting key insights, trends, and any interesting findings."
+def generate_summary(df):
+    # Analyse préliminaire pour comprendre le dataset
+    context_intro = "This dataset encompasses various metrics and insights. "
+    description = "Key areas include "
+    column_descriptions = ', '.join(df.describe().columns) + ". "  # Se concentrer sur les colonnes quantitatives pour le résumé
+    overview = "This summary aims to provide a clear overview of key patterns, trends, and any anomalies present."
+    prompt = context_intro + description + column_descriptions + overview
     
-    # Construction du prompt
-    input_text = f"{context}Here are the column names: {', '.join(data.columns)}. Sample data:\n{sample_data}\n{prompt_intro}"
-    
-    # Génération du résumé avec le modèle
-    result = phi_pipeline(input_text, max_length=400)[0]['generated_text']
-    return result
-
+    # Ajustement des paramètres de génération du résumé
+    summary_results = summarization_pipeline(prompt, max_length=150, min_length=40, length_penalty=2.5, no_repeat_ngram_size=3)
+    summary_text = summary_results[0]['summary_text']
+    return summary_text
 
 def generate_graph(df):
     plt.figure(figsize=(10, 6))
@@ -39,8 +38,7 @@ def generate_graph(df):
     return img
 
 # Interface Streamlit
-st.title("Data Summary and Visualization Application with Phi-2")
-
+st.title("Data Summary and Visualization Application")
 menu = st.sidebar.selectbox("Choose an Option", ["Summary", "Question based Graph"])
 
 if menu == "Summary":
